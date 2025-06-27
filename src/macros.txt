@@ -1,0 +1,23 @@
+\typecolon:\mathrel{\raisebox{.25ex}{\scriptsize ⦂}}
+\stypecolon:\mathrel{\raisebox{.2ex}{\,\tiny ⦂}\,}
+\untyped:{#1}
+\typed:#1 \typecolon #2
+\where:\mathrel{|}
+\range:{#1}\,\text{..}\,{#2}
+\sequence:\left[\;{#1}\;|\;{#2}\;\right]
+\intersection:\cap
+\union:\cup
+\to:\rightarrow
+\gets:\leftarrow
+\implies:\Rightarrow
+\Set:\mathsf{Set}\kern-0.1em\left\langle{#1}\right\rangle\kern-0.1em
+\Equiv:\mathsf{Equiv}\kern-0.15em\left\langle{#1}\right\rangle\kern-0.1em
+\plonkish:{\mathsf{plonkish}}
+\R:\mathcal{R}
+\L:\mathcal{L}
+\F:\mathbb{F}
+\N:\mathbb{N}
+\CUS:\mathsf{CUS}
+\LOOK:\mathsf{LOOK}
+\TAB:\mathsf{TAB}
+\comma:\textsf{, }
