@@ -10,7 +10,9 @@ This is intended to be read in conjunction with the [Plonkish Backend Optimizati
 
 Plonkish arithmetization depends on a field over a prime modulus $p$. Integers taken modulo the field modulus $p$ are called field elements and their type is denoted as $\F$; arithmetic operations on field elements are implicitly performed modulo $p$. We denote the additive identity by $0$ and the multiplicative identity by $1$.  We denote the sum, difference, and product of two field elements using the $+$, $-$, and $\cdot$ operators, respectively.
 
-The notation $\range{a}{b}$ means the sequence of integers from $a$ (inclusive) to $b$ (exclusive) in ascending order.
+$\N$ refers to the type of natural numbers, and $\Z$ to the type of integers.
+
+The notation $\range{a}{b}$ means the vector of integers from $a$ (inclusive) to $b$ (exclusive) in ascending order.
 
 The notation $x \typecolon T$ means that $x$ is of type $T$.
 
@@ -18,15 +20,15 @@ $T \times U$ means the type of pairs with first element from the type $T$, and s
 
 $T \to U$ means the type of functions with range type $T$ and domain type $U$.
 
-$[n]$ means the type of integers from $0$ (inclusive) to $n$ (exclusive).
+$[n]$ means the type of natural numbers from $0$ (inclusive) to $n$ (exclusive).
 
-$T^{[m]}$ means the type of sequences indexed by $[m]$ with elements from type $T$.
+$T^{[m]}$ means the type of vectors indexed by $[m]$ with elements from type $T$.
 
 $T^{[m \times n]}$ means the type of matrices indexed first by a column index in $[m]$ and then by a row index in $[n]$, with elements from type $T$. That is, if $w \typecolon T^{[m \times n]}$ then $w[i, j]$ means the element at column index $i \typecolon [m]$ and row index $j \typecolon [n]$.
 
-If $X$ is a field element, on the other hand, then $X^e$ means the result of raising $X$ to the power $e$. There are no square brackets around the exponent in this case.
+If $X$ is a field element, on the other hand, then $X^e$ means the result of raising $X$ to the integer power $e$. There are no square brackets around the exponent in this case.
 
-The length of a sequence $S$, or the number of elements in a set $S$, is written $\#S$.
+The length of a vector $S$, or the number of elements in a set $S$, is written $\#S$.
 
 The condition that $e$ is a member of the set $S$ is written $e \in S$.
 
@@ -34,11 +36,11 @@ $\Set{T}$ means the type of sets with elements in $T$.
 
 $\Equiv{T}$ means the type of equivalence relations (i.e. reflexive, symmetric, and transitive binary relations) on $T$.
 
-$\sequence{f(e)}{e \gets \range{a}{b}}$ means the sequence of evaluations of $f$ on $\range{a}{b}$.
+$\vector{f(e)}{e \gets \range{a}{b}}$ means the vector of evaluations of $f$ on $\range{a}{b}$.
 
-$\sequence{f(e)}{e}$ means the sequence of evaluations of $f$ for some implicitly defined sequence of zero-based indices $e$.
+$\vector{f(e)}{e}$ means the vector of evaluations of $f$ for some implicitly defined vector of zero-based indices $e$.
 
-$\sum\,S$ means the sum of a sequence $S$ of field elements, and $\prod\,S$ means the product.
+$\displaystyle\sum_{i \stypecolon T} x_i$ means the sum of field elements $x_i$ for all $i \typecolon T$, and $\displaystyle\prod_{i \stypecolon T} x_i$ means the corresponding product. 
 
 $\implies$ means logical implication.
 
@@ -64,29 +66,29 @@ If the proof system is knowledge sound, then the prover must have knowledge of t
 
 The relation $\R_\plonkish$ takes instances of the following form:
 
-| Instance element             | Description |
-| ---------------------------- | ----------- |
-| $\untyped{\F}$               | A prime field. |
-| $\untyped{C}$                | The circuit. |
-| $\typed{\phi}{\F^{[C.t]}}$   | The instance vector, where $t$ is the instance vector length defined below. |
+| Instance element                         | Description                                | <div style="width: 0em"></div> |
+| ---------------------------------------- |:------------------------------------------ | ------------------------------ |
+| $\untyped{\F}$                           | A prime field.                                                              |
+| $\untyped{C}$                            | The circuit.                                                                |
+| $\typed{\phi}{\F^{[C.t]}}$               | The instance vector, where $t$ is the instance vector length defined below. |
 
 The circuit $C \typecolon \mathsf{AbstractCircuit}_{\F}$ in turn has the following form:
 
-| Circuit element                                | Description                                                                                         | Used in                                   |
-| ---------------------------------------------- | --------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| $\typed{t}{\N}$                                | Length of the instance vector.                                                                      |                                           |
-| $\typed{n}{\N \where n > 0}$                   | Number of rows for the witness matrix.                                                              |                                           |
-| $\typed{m}{\N \where m > 0}$                   | Number of columns for the witness matrix.                                                           |                                           |
-| $\typed{\equiv}{\Equiv{[m] \times [n]}}$       | An equivalence relation indicating which witness entries are equal to each other.                   | [Copy constraints](#copy-constraints)     |
-| $\typed{S}{\Set{([m] \times [n]) \times [t]}}$ | A set indicating which witness entries are equal to instance vector entries.                        | [Copy constraints](#copy-constraints)     |
-| $\typed{m_f}{\N \where m_f ≤ m}$               | Number of columns that are fixed.                                                                   | [Fixed constraints](#fixed-constraints)   |
-| $\typed{f}{\F^{[m_f \times n]}}$               | The fixed content of the first $m_f$ columns.                                                       | [Fixed constraints](#fixed-constraints)   |
-| $\typed{p_u}{\F^{[m]} \to \F}$                 | Custom multivariate polynomials.                                                                    | [Custom constraints](#custom-constraints) |
-| $\typed{\CUS_u}{\Set{[n]}}$                    | Sets indicating rows on which the custom polynomials $p_u$ are constrained to evaluate to $0$.      | [Custom constraints](#custom-constraints) |
-| $\typed{L_v}{\N}$                              | Number of table columns in the lookup table with index $v$.                                         | [Lookup constraints](#lookup-constraints) |
-| $\typed{\TAB_v}{\Set{\F^{[L_v]}}}$             | Lookup tables $\TAB_v$ each containing a set of sequences of type $\F^{[L_v]}$.                     | [Lookup constraints](#lookup-constraints) |
-| $\typed{q_{v,s}}{\F^{[m]} \to \F}$             | Scaling multivariate polynomials $q_{v,s}$ for $s \typecolon [L_v]$.                                | [Lookup constraints](#lookup-constraints) |
-| $\typed{\LOOK_v}{\Set{[n]}}$                   | Sets indicating rows on which the scaling polynomials $q_{v,s}$ evaluate to some tuple in $\TAB_v$. | [Lookup constraints](#lookup-constraints) |
+| Circuit element                          | Description                                                                                             | <div style="width: 9.5em">Used in</div>   |
+| ---------------------------------------- |:------------------------------------------------------------------------------------------------------- |:----------------------------------------- |
+| $\typed{t}{\N}$                          | Length of the instance vector.                                                                          |                                           |
+| $\typed{n}{\N \where n > 0}$             | Number of rows for the witness matrix.                                                                  |                                           |
+| $\typed{m}{\N \where m > 0}$             | Number of columns for the witness matrix.                                                               |                                           |
+| $\typed{≡}{\Equiv{[m]\!\times\![n]}}\bs$ | An equivalence relation indicating which witness entries are equal to each other.                       | [Copy constraints](#copy-constraints)     |
+| $\typed{S}{([m]\!\times\![n])^{[t]}}$    | A set indicating which witness entries are equal to instance vector entries.                            | [Copy constraints](#copy-constraints)     |
+| $\typed{m_f}{\N \where m_f ≤ m}$         | Number of columns that are fixed.                                                                       | [Fixed constraints](#fixed-constraints)   |
+| $\typed{f}{\F^{[m_f \times n]}}$         | The fixed content of the first $m_f$ columns.                                                           | [Fixed constraints](#fixed-constraints)   |
+| $\typed{p_u}{\F^{[m]} \to \F}$           | Custom multivariate polynomials.                                                                        | [Custom constraints](#custom-constraints) |
+| $\typed{\CUS_u}{\Set{[n]}}$              | Sets indicating rows on which the custom polynomials $p_u$ are constrained to evaluate to $0\stop$      | [Custom constraints](#custom-constraints) |
+| $\typed{L_v}{\N}$                        | Number of table columns in the lookup table with index $v\stop$                                         | [Lookup constraints](#lookup-constraints) |
+| $\typed{\TAB_v}{\Set{\F^{[L_v]}}}$       | Lookup tables $\TAB_v$ each containing a set of vectors of type $\F^{[L_v]}\stop$                       | [Lookup constraints](#lookup-constraints) |
+| $\typed{q_{v,s}}{\F^{[m]} \to \F}$       | Scaling multivariate polynomials $q_{v,s}$ for $s \typecolon [L_v]\stop$                                | [Lookup constraints](#lookup-constraints) |
+| $\typed{\LOOK_v}{\Set{[n]}}$             | Sets indicating rows on which the scaling polynomials $q_{v,s}$ evaluate to some tuple in $\TAB_v\stop$ | [Lookup constraints](#lookup-constraints) |
 
 Multivariate polynomials are defined below in the [Custom constraints](#custom-constraints) section.
 
@@ -94,17 +96,17 @@ Multivariate polynomials are defined below in the [Custom constraints](#custom-c
 
 The relation $\R_\plonkish$ takes witnesses of the following form:
 
-| Witness element   | Description |
-| ----------------- | -------- |
-| $w$               | The witness matrix $w \typecolon \F^{[m \times n]}$. |
+| Witness element                          | Description                                | <div style="width: 0em"></div> |
+| ---------------------------------------- |:------------------------------------------ | ------------------------------ |
+| $\typed{w}{\F^{[m \times n]}}$           | The witness matrix.$\hspace{6em}$                                           |
 
-Define $\vec{w}_j$ as the row vector $\sequence{w[i, j]}{i \leftarrow \range{0}{m}}$.
+Define $\vec{w}_j$ as the row vector $\vector{w[i, j]}{i \leftarrow \range{0}{m}}$.
 
 ### Definition of the relation
 
-Given the above definitions, the relation $\R_\plonkish$ corresponds to a set of $\,(\!$ instance $\!,\,$ witness $\!)\,$ pairs
+Given the above definitions, the relation $\R_\plonkish$ corresponds to a set of $\kern0.1em(\textsf{instance},\,\textsf{witness})\kern0.1em$ pairs $(x, w)$ where
 $$
-\left(x = \left(\F,\ C = \left(t, n, m, \kern-0.1em\equiv, S, m_f, f,\ \sequence{(p_u, \mathsf{CUS}_{u})}{u}\!,\,\sequence{(L_v, \mathsf{TAB}_v, \sequence{q_{v,s}}{s}\!, \mathsf{LOOK}_v)}{v}\right)\!,\, \phi\right)\!,\, w \right)
+x = \left(\F,\ C = \left(t, n, m, \kern-0.1em\equiv, S, m_f, f,\ \vector{(p_u, \mathsf{CUS}_{u})}{u}\!,\,\vector{(L_v, \mathsf{TAB}_v, \vector{q_{v,s}}{s}\!, \mathsf{LOOK}_v)}{v}\right)\!,\, \phi\right)
 $$
 such that:
 $$
@@ -113,7 +115,7 @@ $$
    S \typecolon \Set{([m] \times [n]) \times [t]}\comma \phi \typecolon \F^{[t]} & & ((i,j),k) \in S \implies w[i, j] = \phi[k] \\[0.3ex]
    \equiv\,\,\typecolon \Equiv{[m] \times [n]} & & (i,j) \equiv (k,\ell) \implies w[i, j] = w[k, \ell] \\[0.3ex]
    \mathsf{CUS}_u \typecolon \Set{[n]}\comma p_u \typecolon \F^{[m]} \to \F & & j \in \mathsf{CUS}_u \implies p_u(\vec{w}_j) = 0 \\[0.3ex]
-   \mathsf{LOOK}_v \typecolon \Set{[n]}\comma q_{v,s} \typecolon \F^{[m]} \to \F\comma \mathsf{TAB}_v \typecolon \Set{\F^{[L_v]}} & & j \in \mathsf{LOOK}_v \implies \sequence{q_{v,s}(\vec{w}_j)}{s \gets \range{0}{L_v}} \in \mathsf{TAB}_v
+   \mathsf{LOOK}_v \typecolon \Set{[n]}\comma q_{v,s} \typecolon \F^{[m]} \to \F\comma \mathsf{TAB}_v \typecolon \Set{\F^{[L_v]}} & & j \in \mathsf{LOOK}_v \implies \vector{q_{v,s}(\vec{w}_j)}{s \gets \range{0}{L_v}} \in \mathsf{TAB}_v
 \end{array}
 $$
 
@@ -137,7 +139,7 @@ The first $m_f$ columns of $w$ are fixed to the columns of $f$.
 Copy constraints enforce that entries in the witness matrix are equal to each other, or that an instance entry is equal to a witness entry.
 
 | Copy Constraints                                        | Description                                                                                                       |
-| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+|:------------------------------------------------------- |:----------------------------------------------------------------------------------------------------------------- |
 | $((i,j),k) \in S \implies$ $w[i, j] = \phi[k]$          | The advice entry at row $i$ and column $j$ is equal to the instance entry at index $k$ for all $((i,j),k) \in S$. |
 | $(i,j) \equiv (k,\ell) \implies$ $w[i, j] = w[k, \ell]$ | $\equiv$ is an equivalence relation indicating which witness entries are constrained to be equal.                 |
 
@@ -155,17 +157,17 @@ In some systems using Plonkish, custom constraints are referred to as "gates".
 
 Custom constraints enforce that witness entries within a row satisfy some multivariate polynomial. Here $p_u$ could indicate any case that can be generated using a combination of multiplications and additions.
 
-| Custom Constraints                                   | Description                                                                                                                               |
-| ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | 
-| $j \in \mathsf{CUS}_u \implies$ $p_u(\vec{w}_j) = 0$ | $u$ is the index of a custom constraint. $j$ ranges over the set of rows $\mathsf{CUS}_u$ for which the custom constraint is switched on. |
+| Custom Constraints | Description |
+|:------------------ |:----------- | 
+| $j \in \mathsf{CUS}_u \implies$ $p_u(\vec{w}_j) = 0$ | $u$ is the index of a custom constraint.<br> $j$ ranges over the set of rows $\mathsf{CUS}_u$ for which the custom constraint is switched on. |
 
 Here $p_u \typecolon \F^{[m]} \to \F$ is an arbitrary [multivariate polynomial](https://en.wikipedia.org/wiki/Polynomial_ring#Definition_(multivariate_case)):
 
 > Given $\eta$ symbols $X_i$ for $i \typecolon [\eta]$ called indeterminates, a multivariate polynomial $P$ in these indeterminates with coefficients in $\F$ is a finite linear combination
 >
-> $$P\!\left(\sequence{X_b}{b \gets \range{0}{\eta}}\right) = \sum_{z \stypecolon [\nu]} \Big(c_z \cdot \prod_{b \stypecolon [\eta]} X_b^{\alpha_{z,b}}\Big)$$
+> $$P\!\left(\vector{X_b}{b \gets \range{0}{\eta}}\right) = \sum_{z \stypecolon [\nu]} \Big(c_z \cdot \prod_{b \stypecolon [\eta]} X_b^{\alpha_{z,b}}\Big)$$
 >
-> where  $c_z \typecolon \F\comma$ $c_z \neq 0\comma$ and $\nu$ and $\alpha_{z,b}$ are positive integers.
+> where $c_z \typecolon \F \where c_z \neq 0\comma$ $\nu \typecolon \N$, and $\alpha_{z,b} \typecolon \N\stop$
 
 #### Lookup constraints
 
@@ -176,7 +178,7 @@ The sizes of tables are not limited at this layer. A realization of a proving sy
 In this specification, we only support fixed lookup tables determined in advance. This could be generalized to support dynamic tables determined by part of the witness matrix.
 
 | Lookup Constraints | Description |
-| -------- | -------- |
-| $j \in \mathsf{LOOK}_v \implies$ $\sequence{q_{v,s}(\vec{w}_j)}{s \gets \range{0}{L_v}} \in \mathsf{TAB}_v$ | $v$ is the index of a lookup table. $j$ ranges over the set of rows $\mathsf{LOOK}_v$ <br> for which the lookup constraint is switched on. |
+|:------------------ |:----------- |
+| $j \in \mathsf{LOOK}_v \implies$ $\vector{q_{v,s}(\vec{w}_j)}{s \gets \range{0}{L_v}} \in \mathsf{TAB}_v$ | $v$ is the index of a lookup table.<br> $j$ ranges over the set of rows $\mathsf{LOOK}_v$ for which the lookup constraint is switched on. |
 
-Here $\sequence{q_{v,s} \typecolon \F^{[m]} \to \F}{s \gets \range{0}{L_v}}$ are multivariate polynomials that collectively map the witness entries $\vec{w}_j$ on the lookup row $j \in \mathsf{LOOK}_v$ to a tuple of field elements. This tuple will be constrained to match some row of the table $\mathsf{TAB}_v$.
+Here $\vector{q_{v,s} \typecolon \F^{[m]} \to \F}{s \gets \range{0}{L_v}}$ are multivariate polynomials that collectively map the witness entries $\vec{w}_j$ on the lookup row $j \in \mathsf{LOOK}_v$ to a tuple of field elements. This tuple will be constrained to match some row of the table $\mathsf{TAB}_v$.

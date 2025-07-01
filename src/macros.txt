@@ -1,23 +1,42 @@
 \typecolon:\mathrel{\raisebox{.25ex}{\scriptsize ⦂}}
 \stypecolon:\mathrel{\raisebox{.2ex}{\,\tiny ⦂}\,}
-\untyped:{#1}
-\typed:#1 \typecolon #2
+\untyped:\hspace{2.9em}\mathllap{#1}\hspace{6.66em}
+\typed:\hspace{2.8em}\mathllap{#1}\;{\typecolon #2}
 \where:\mathrel{|}
 \range:{#1}\,\text{..}\,{#2}
-\sequence:\left[\;{#1}\;|\;{#2}\;\right]
+\vector:\left[\;{#1}\;|\;{#2}\;\right]
+\setof:\left\{\;{#1}\;|\;{#2}\;\right\}
 \intersection:\cap
 \union:\cup
+\and:\mathrel{\textsf{and}}
+\or:\mathrel{\textsf{or}}
 \to:\rightarrow
 \gets:\leftarrow
 \implies:\Rightarrow
 \Set:\mathsf{Set}\kern-0.1em\left\langle{#1}\right\rangle\kern-0.1em
 \Equiv:\mathsf{Equiv}\kern-0.15em\left\langle{#1}\right\rangle\kern-0.1em
+
 \plonkish:{\mathsf{plonkish}}
+\concrete:{\mathsf{concrete}}
+
 \R:\mathcal{R}
 \L:\mathcal{L}
+
 \F:\mathbb{F}
 \N:\mathbb{N}
+\Z:\mathbb{Z}
+
 \CUS:\mathsf{CUS}
 \LOOK:\mathsf{LOOK}
 \TAB:\mathsf{TAB}
+\offset:\mathsf{offset}
+\offsets:\mathsf{offsets}
+\windowsize:\mathsf{windowsize}
+\hints:\mathsf{hints}
+\coordmap:\mathsf{coord\_map}
+\okfor:\mathsf{ok\_for}
+\constrained:\mathsf{constrained}
+
 \comma:\textsf{, }
+\stop:\kern-0.03em\textsf{.}
+\bs:\!\!\!\!
